@@ -1,51 +1,408 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<style type="text/css">
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+    <title>Pugal-Aquino Family Tree</title>
+
+    <style>
 
 	.node {
-    cursor: pointer;
-  }
+		cursor: pointer;
+	}
 
-  .overlay{
-      background-color:#EEE;
-  }
+	.node circle {
+	  fill: #fff;
+	  stroke: steelblue;
+	  stroke-width: 3px;
+	}
 
-  .node circle {
-    fill: #fff;
-    stroke: steelblue;
-    stroke-width: 1.5px;
-  }
+	.node text {
+	  font: 12px sans-serif;
+	}
 
-  .node text {
-    font-size:10px;
-    font-family:sans-serif;
-  }
+	.link {
+	  fill: none;
+	  stroke: #ccc;
+	  stroke-width: 2px;
+	}
 
-  .link {
-    fill: none;
-    stroke: #ccc;
-    stroke-width: 1.5px;
-  }
+    </style>
 
-  .templink {
-    fill: none;
-    stroke: red;
-    stroke-width: 3px;
-  }
+  </head>
 
-  .ghostCircle.show{
-      display:block;
-  }
-
-  .ghostCircle, .activeDrag .ghostCircle{
-       display: none;
-  }
-
-</style>
-<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <body>
+<h1 style="font-family: sans-serif">Pugal-Aquino Family Tree</h1>
+<!-- load the d3.js library -->
 <script src="https://d3js.org/d3.v3.min.js"></script>
-<script src="dndTree.js"></script>
-<body>
-    <div id="tree-container"></div>
-</body>
+
+<script>
+
+var treeData = [
+  {
+    "name": "Bonifacio Sr. and Lolita",
+    "parent": "null",
+    "children": [
+      {
+        "name": "Mario and Imelda", // child of Global
+        "parent": "Bonifacio Sr. and Lolita",
+        "children": [
+          {
+            "name": "William and Kate", // child of Canada
+            "parent": "Mario and Imelda"
+          },
+          {
+            "name": "Fred and Wilma", // child of Canada
+            "parent": "Mario and Imelda"
+          },
+          {
+            "name": "Tom and Nicole", // child of Canada
+            "parent": "Mario and Imelda"
+          },
+          {
+            "name": "Joseph and Mary", // child of Canada
+            "parent": "Mario and Imelda"
+          }
+        ]
+      },
+      {
+        "name": "Joseph and Celia", // child of Global
+        "parent": "Bonifacio Sr. and Lolita",
+        "children": [
+          {
+            "name": "Jennings and Ailyne", // child of International
+            "parent": "Joseph and Celia",
+            "children": [
+              {
+                "name": "Josh", // child of Australia
+                "parent": "Jennings and Ailyne"
+              },
+              {
+                "name": "Genie", // child of Australia
+                "parent": "Jennings and Ailyne"
+              },
+              {
+                "name": "Ethan", // child of Australia
+                "parent": "Jennings and Ailyne"
+              }
+            ]
+          },
+          {
+            "name": "Sasha",
+            "parent": "Joseph and Celia"
+          },
+          {
+            "name": "Dundee and Roma",
+            "parent": "Joseph and Celia",
+            "children": [
+              {
+                "name": "Andrei",
+                "parent": "Dundee and Roma"
+              },
+              {
+                "name": "Jiro",
+                "parent": "Dundee and Roma"
+              },
+              {
+                "name": "Gavin",
+                "parent": "Dundee and Roma"
+              }
+            ]
+          },
+          {
+            "name": "Bedeek and Odette",
+            "parent": "Joseph and Celia",
+            "children": [
+              {
+                "name": "Izzy",
+                "parent": "Bedeek and Odette"
+              },
+              {
+                "name": "Blaire",
+                "parent": "Bedeek and Odette"
+              }
+            ]
+          },
+          {
+            "name": "KC and Faye",
+            "parent": "International"
+          },
+          {
+            "name": "Wilbert and Mea",
+            "parent": "Joseph and Celia",
+            "children": [
+              {
+                "name": "Liam",
+                "parent": "Wilbert and Mea"
+              },
+              {
+                "name": "Drei",
+                "parent": "Wilbert and Mea"
+              }
+            ]
+          },
+          {
+            "name": "Chingay",
+            "parent": "Joseph and Celia",
+            "children": [
+              {
+                "name": "Youssef",
+                "parent": "Chingay"
+              }
+            ]
+          },
+          {
+            "name": "Chinkee",
+            "parent": "Joseph and Celia"
+          }
+        ]
+      },
+      {
+        "name": "Danny and Malou", // child of Global
+        "parent": "Bonifacio Sr. and Lolita",
+        "children": [
+          {
+            "name": "Dustin and Macza", // child of International
+            "parent": "Danny and Malou",
+            "children": [
+              {
+                "name": "Daniel", // child of Australia
+                "parent": "Dustin and Macza"
+              },
+              {
+                "name": "Maia", // child of Australia
+                "parent": "Dustin and Macza"
+              },
+              {
+                "name": "Chloe", // child of Australia
+                "parent": "Dustin and Macza"
+              }
+            ]
+          },
+          {
+            "name": "Hans",
+            "parent": "Danny and Malou"
+          }
+        ]
+      },
+      {
+        "name": "Rolan and Letty", // child of Global
+        "parent": "Bonifacio Sr. and Lolita",
+        "children": [
+          {
+            "name": "Kris", // child of International
+            "parent": "Rolan and Letty",
+          },
+          {
+            "name": "Kariza",
+            "parent": "Rolan and Letty"
+          }
+        ]
+      },
+      {
+        "name": "Al and Judy", // child of Global
+        "parent": "Bonifacio Sr. and Lolita",
+        "children": [
+          {
+            "name": "Kristine", // child of International
+            "parent": "Al and Judy",
+          },
+          {
+            "name": "Aljon",
+            "parent": "Al and Judy"
+          }
+        ]
+      },
+      {
+        "name": "Rudy and Leia", // child of Global
+        "parent": "Bonifacio Sr. and Lolita",
+        "children": [
+          {
+            "name": "Maurice",
+            "parent": "Rudy and Leia"
+          },
+          {
+            "name": "Arnel and Dana", // child of International
+            "parent": "Rudy and Leia",
+            "children": [
+              {
+                "name": "Daniela", // child of Australia
+                "parent": "Arnel and Dana"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Sr Yoly",
+        "parent": "Bonifacio Sr. and Lolita"
+      },
+      {
+        "name": "Francis and Marivic", // child of Global
+        "parent": "Bonifacio Sr. and Lolita",
+        "children": [
+          {
+            "name": "Maffi", // child of Latin America
+            "parent": "Francis and Marivic"
+          }
+        ]
+      },
+      {
+        "name": "Jun and Cora", // child of Global
+        "parent": "Bonifacio Sr. and Lolita",
+        "children": [
+          {
+            "name": "Bon", // child of Canada
+            "parent": "Jun and Cora"
+          },
+          {
+            "name": "Jon", // child of Canada
+            "parent": "Jun and Cora"
+          },
+          {
+            "name": "Ian", // child of Canada
+            "parent": "Jun and Cora"
+          },
+          {
+            "name": "Adrian", // child of Canada
+            "parent": "Jun and Cora"
+          }
+        ]
+      }
+    ]
+  }
+];
+
+
+// ************** Generate the tree diagram	 *****************
+var margin = {top: 20, right: 120, bottom: 20, left: 240},
+	width = 960 - margin.right - margin.left,
+	height = 960 - margin.top - margin.bottom;
+
+var i = 0,
+	duration = 750,
+	root;
+
+var tree = d3.layout.tree()
+	.size([height, width]);
+
+var diagonal = d3.svg.diagonal()
+	.projection(function(d) { return [d.y, d.x]; });
+
+var svg = d3.select("body").append("svg")
+	.attr("width", width + margin.right + margin.left)
+	.attr("height", height + margin.top + margin.bottom)
+  .append("g")
+	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+root = treeData[0];
+root.x0 = height / 2;
+root.y0 = 0;
+
+update(root);
+
+d3.select(self.frameElement).style("height", "500px");
+
+function update(source) {
+
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root).reverse(),
+	  links = tree.links(nodes);
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 180; });
+
+  // Update the nodes…
+  var node = svg.selectAll("g.node")
+	  .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter any new nodes at the parent's previous position.
+  var nodeEnter = node.enter().append("g")
+	  .attr("class", "node")
+	  .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+	  .on("click", click);
+
+  nodeEnter.append("circle")
+	  .attr("r", 1e-6)
+	  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeEnter.append("text")
+	  .attr("x", function(d) { return d.children || d._children ? -13 : 13; })
+	  .attr("dy", ".35em")
+	  .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+	  .text(function(d) { return d.name; })
+	  .style("fill-opacity", 1e-6);
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+	  .duration(duration)
+	  .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+  nodeUpdate.select("circle")
+	  .attr("r", 10)
+	  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeUpdate.select("text")
+	  .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+	  .duration(duration)
+	  .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+	  .remove();
+
+  nodeExit.select("circle")
+	  .attr("r", 1e-6);
+
+  nodeExit.select("text")
+	  .style("fill-opacity", 1e-6);
+
+  // Update the links…
+  var link = svg.selectAll("path.link")
+	  .data(links, function(d) { return d.target.id; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("path", "g")
+	  .attr("class", "link")
+	  .attr("d", function(d) {
+		var o = {x: source.x0, y: source.y0};
+		return diagonal({source: o, target: o});
+	  });
+
+  // Transition links to their new position.
+  link.transition()
+	  .duration(duration)
+	  .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+	  .duration(duration)
+	  .attr("d", function(d) {
+		var o = {x: source.x, y: source.y};
+		return diagonal({source: o, target: o});
+	  })
+	  .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+	d.x0 = d.x;
+	d.y0 = d.y;
+  });
+}
+
+// Toggle children on click.
+function click(d) {
+  if (d.children) {
+	d._children = d.children;
+	d.children = null;
+  } else {
+	d.children = d._children;
+	d._children = null;
+  }
+  update(d);
+}
+
+</script>
+
+  </body>
 </html>
